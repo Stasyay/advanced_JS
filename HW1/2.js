@@ -47,16 +47,23 @@ const menu = new Map([
 
 
 // Вам необходимо реализовать класс, который управляет заказами и поварами.
+
 class Manager {
   finalOrder = new Map();
   count;
   newOrder(client, ...order) {
     this.count = 0
     order.forEach((element) => {
-      if (menu.get(element.type).has(element.name)) {
+      try {
+        if (!menu.get(element.type).has(element.name)) {
+          throw new Error("Такого блюда не существует");
+        }
         this.count++;
+      } catch (error) {
+        console.log(element.type + " " + element.name + " " + error.message);
       }
     });
+
     if (this.finalOrder.get(client) === undefined) {
       if (this.count === order.length) {
         this.finalOrder.set(client, order);
@@ -95,7 +102,7 @@ const formatArray = (array) => {
 }
 
 // Можно передать внутрь конструктора что-либо, если необходимо.
-const manager = new Manager();
+const manager = new Manager(cooks, menu);
 
 // Вызовы ниже должны работать верно, менять их нельзя, удалять тоже.
 manager.newOrder(
@@ -141,42 +148,3 @@ manager.newOrder(
 );
 // Ничего не должно быть добавлено, должна быть выброшена ошибка:
 // Десерт "Трубочка с вареной сгущенкой" - такого блюда не существует.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// ${order.map((el) => `${el.type} "${el.name}" - ${el.quantity}; готовит повар {coooks.get(el.type)}\n`).join("")}`);
-// }
-// const resultOrder = []
-
-// if (!this.order.has(client)) {
-//   this.order.set(client, new Map());
-//   for (let i = 0; i < order.length; i++) {
-//     let str = `${order[i].type} "${order[i].name}" - ${order[i].quantity}; готовит повар {coooks.get(order.type)}\n`
-//     resultOrder.push(str);
-//   }
-// } else {
-
-//   this.order.set(client, order);
-//   // for (let i = 0; i < order.length; i++) {
-//   //   let str = `${order[i].type} "${order[i].name}" - ${order[i].quantity}; готовит повар {coooks.get(order.type)}\n`
-//   //   resultOrder.push(str);
-//   // }
-// }
-
-//  console.log(`Клиент ${client.firstname} заказал:\n${resultOrder.join("")}`);
